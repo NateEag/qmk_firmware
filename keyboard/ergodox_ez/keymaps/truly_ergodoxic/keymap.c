@@ -20,6 +20,19 @@
 #define SYMB 2 // Function key layer
 #define MDIA 3 // media keys
 
+// I want to use some modifier keys as modifier/tap dual-function keys.
+// The MT() macro's native behavior is bad for a fast typist, though -
+// if the whole sequence takes less than TAPPING_TERM, you'll get the keycodes
+// for the two keys you pressed, rather than modifier+key.
+//
+// I have therefore adopted a workaround proposed on GitHub:
+//
+// https://github.com/jackhumbert/qmk_firmware/issues/303#issuecomment-217328415
+//
+// which means we only get the tap keycode if the tap was less than
+// TAPPING_TERM *and* no other keys were pressed during that time.
+#define TE_CTL_ESC 8
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* Keymap 0: Basic layer
  *
@@ -61,7 +74,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_GRV,         KC_1,         KC_2,   KC_3,   KC_4,   KC_5,   KC_MINS,
         KC_SLSH,        KC_Q,         KC_W,   KC_E,   KC_R,   KC_T,   KC_TAB,
         SFT_T(KC_CAPS), KC_A,         KC_S,   KC_D,   KC_F,   KC_G,
-        CTL_T(KC_ESC),  KC_Z,         KC_X,   KC_C,   KC_V,   KC_B,   KC_BSPC,
+        F(TE_CTL_ESC),  KC_Z,         KC_X,   KC_C,   KC_V,   KC_B,   KC_BSPC,
         KC_LALT,        KC_QUOT,      LALT(KC_LSFT),  KC_LEFT,KC_LGUI,
                                               MO(2), TG(1),
                                                               KC_HOME,
@@ -70,7 +83,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_EQL,      KC_6,   KC_7,   KC_8,   KC_9,   KC_0,             KC_LBRC,
         KC_TAB,      KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,             KC_BSLS,
                      KC_H,   KC_J,   KC_K,   KC_L,   KC_SCLN,          SFT_T(KC_CAPS),
-        KC_BSPC,     KC_N,   KC_M,   KC_COMM,KC_DOT, KC_QUOT,          CTL_T(KC_ESC),
+        KC_BSPC,     KC_N,   KC_M,   KC_COMM,KC_DOT, KC_QUOT,          F(TE_CTL_ESC),
                              KC_RGUI,  KC_DOWN,KC_LBRC,KC_RBRC,          KC_RALT,
              TG(1),       MO(2),
              KC_PGUP,
@@ -207,9 +220,9 @@ KEYMAP(
 ),
 };
 
-// TODO What does this actually do?
 const uint16_t PROGMEM fn_actions[] = {
-    [1] = ACTION_LAYER_TAP_TOGGLE(SYMB)                // FN1 - Momentary Layer 1 (Symbols)
+  [1] = ACTION_LAYER_TAP_TOGGLE(SYMB),                // FN1 - Momentary Layer 1 (Symbols)
+  [TE_CTL_ESC] = ACTION_MACRO_TAP(TE_CTL_ESC)
 };
 
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
@@ -217,14 +230,34 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
   // MACRODOWN only works in this function
       switch(id) {
         case 0:
-        if (record->event.pressed) {
-          register_code(KC_RSFT);
-        } else {
-          unregister_code(KC_RSFT);
-        }
-        break;
+          if (record->event.pressed) {
+            register_code(KC_RSFT);
+          } else {
+            unregister_code(KC_RSFT);
+          }
+          break;
+
+        case TE_CTL_ESC:
+          // TODO Look for a simpler way to express this idea.
+          // Maybe there should be an alternative to the MT() macro that has
+          // these semantics baked-in? MTI(), for Modifier-Tap-Interrupted?
+          if (record->event.pressed) {
+            if (record->tap.count && !record->tap.interrupted) {
+              register_code(KC_ESC);
+            } else {
+              register_code(KC_LCTL);
+            }
+          } else {
+            if (record->tap.count && !record->tap.interrupted) {
+              unregister_code(KC_ESC);
+            } else {
+              unregister_code(KC_LCTL);
+            }
+          }
+          break;
       }
-    return MACRO_NONE;
+
+      return MACRO_NONE;
 };
 
 // Runs just one time when the keyboard initializes.
