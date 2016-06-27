@@ -67,9 +67,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                        ,-------------.       ,-------------.
  *                                        |  Fn  |Plover|       |Plover|  Fn   |
  *                                 ,------|------|------|       |------+-------+------.
- *                                 |      |      | Home |       | PgUp |       |      |
+ *                                 |      |      | Left |       |  Up  |       |      |
  *                                 | Space| Enter|------|       |------| Enter |Space |
- *                                 |      |      | End  |       | PgDn |       |      |
+ *                                 |      |      |Right |       | Down |       |      |
  *                                 `--------------------'       `----------------------'
  */
 // If it accepts an argument (i.e, is a function), it doesn't need KC_.
@@ -82,8 +82,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         F(TE_CTL_ESC),  KC_Z,         KC_X,   KC_C,   KC_V,   KC_B,   KC_BSPC,
         KC_LALT,        KC_QUOT,      LALT(KC_LSFT),  KC_LEFT,KC_LGUI,
                                               MO(2), TG(1),
-                                                              KC_HOME,
-                                              KC_SPC, KC_ENT, KC_END,
+                                                              KC_LEFT,
+                                              KC_SPC, KC_ENT, KC_RIGHT,
         // right hand
         KC_EQL,      KC_6,   KC_7,   KC_8,   KC_9,   KC_0,             KC_DELETE,
         KC_TAB,      KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,             KC_BSLS,
@@ -91,8 +91,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_BSPC,     KC_N,   KC_M,   KC_COMM,KC_DOT, KC_QUOT,          F(TE_CTL_ESC),
                              KC_RGUI,KC_DOWN,KC_LBRC,KC_RBRC,          KC_RALT,
              TG(1),       MO(2),
-             KC_PGUP,
-             KC_PGDN,KC_ENT, KC_SPC
+             KC_UP,
+             KC_DOWN,KC_ENT, KC_SPC
     ),
 
 /* Keymap 1: Steno for Plover, adapted from
@@ -159,9 +159,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                        ,-------------.       ,-------------.
  *                                        |      |      |       |      |      |
  *                                 ,------|------|------|       |------+------+------.
- *                                 |      |      |      |       |      |      |      |
+ *                                 |      |      | Home |       | PgUp |      |      |
  *                                 |      |      |------|       |------|      |      |
- *                                 |      |      |      |       |      |      |      |
+ *                                 |      |      | End  |       | PgDn |      |      |
  *                                 `--------------------'       `--------------------'
  */
 // Function layer
@@ -173,17 +173,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
        KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
                                        KC_TRNS,KC_TRNS,
-                                               KC_TRNS,
-                               KC_TRNS,KC_TRNS,KC_TRNS,
+                                               KC_HOME,
+                               KC_TRNS,KC_TRNS,KC_END,
        // right hand
-       KC_PSCR, KC_F6,   KC_F7,  KC_F8,   KC_F9,   KC_F10,  KC_F11,
-       KC_TRNS, KC_TRNS, KC_TRNS,KC_TRNS, KC_TRNS, KC_TRNS, KC_F12,
-                KC_TRNS, KC_TRNS,KC_RPRN, KC_RCBR, KC_RBRC, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS,KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                         KC_TRNS,KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS,
-       KC_TRNS, KC_TRNS,
-       KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS
+       KC_PSCR,  KC_F6,   KC_F7,  KC_F8,   KC_F9,   KC_F10,  KC_F11,
+       KC_TRNS,  KC_TRNS, KC_TRNS,KC_TRNS, KC_TRNS, KC_TRNS, KC_F12,
+                 KC_TRNS, KC_TRNS,KC_RPRN, KC_RCBR, KC_RBRC, KC_TRNS,
+       KC_TRNS,  KC_TRNS, KC_TRNS,KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+                          KC_TRNS,KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS,
+       KC_TRNS,  KC_TRNS,
+       KC_PGUP,
+       KC_PGDOWN,KC_TRNS, KC_TRNS
 ),
 
 /* Keymap 3: Function key layer
