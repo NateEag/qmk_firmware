@@ -20,6 +20,8 @@
 #define SYMB 2 // Function key layer
 #define MDIA 3 // media keys
 
+#define LEADER_TIMEOUT 300
+
 // I want to use some modifier keys as modifier/tap dual-function keys.
 // The MT() macro's native behavior is bad for a fast typist, though -
 // if the whole sequence takes less than TAPPING_TERM, you'll get the keycodes
@@ -36,26 +38,19 @@
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* Keymap 0: Basic layer
  *
- * TODO Decide where [] and {} go.
- *
- * I've considered putting them in the function layer, on the home row,
- * which is not a crazy idea. It does mean modifiers for brackets, though, which
- * seems like unnecessary keypressing.
- *
- * I suppose another option is learning to use them down in the sub-row where
- * they currently live. I don't love that, but it might actually be usable.
+ * Symbols surrounded by () can be triggered by pressing the key once after the
+ * leader key. Their Shift equivalent can be triggered by pressing the key
+ * twice after the leader key.
  *
  * TODO Do something useful on tapping Shift.
  * I currently use an IDE at $DAYJOB that uses Shift-Shift as an unremappable
  * high-importance shortcut. Thus, I can't do anything else with the Shift
  * keys, but I would like to.
  *
- * For now, I guess I'll try all of the above and see which approach I wind up using.
- *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
- * |   `    |   1  |   2  |   3  |   4  |   5  |  -   |           |  =   |   6  |   7  |   8  |   9  |   0  |  Del   |
+ * |   `    |   1  |   2  |   3  |   4  |   5  |Leader|           |Leader|   6  |   7  |   8  |   9  |   0  |  - (=) |
  * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
- * |   /    |   Q  |   W  |   E  |   R  |   T  | Tab  |           | Tab  |   Y  |   U  |   I  |   O  |   P  |   \    |
+ * | / (\)  |   Q  |   W  |   E  |   R  |   T  | Tab  |           | Tab  |   Y  |   U  |   I  |   O  |   P  | [ (])  |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
  * | Shift  |   A  |   S  |   D  |   F  |   G  |------|           |------|   H  |   J  |   K  |   L  |   ;  | Shift  |
  * |--------+------+------+------+------+------| Back |           | Back |------+------+------+------+------+--------|
@@ -76,7 +71,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Otherwise, it needs KC_*
 [BASE] = KEYMAP(  // layer 0 : default
         // left hand
-        KC_GRV,         KC_1,         KC_2,   KC_3,   KC_4,   KC_5,   KC_MINS,
+        KC_GRV,         KC_1,         KC_2,   KC_3,   KC_4,   KC_5,   KC_LEAD,
         KC_SLSH,        KC_Q,         KC_W,   KC_E,   KC_R,   KC_T,   KC_TAB,
         KC_LSFT,        KC_A,         KC_S,   KC_D,   KC_F,   KC_G,
         F(TE_CTL_ESC),  KC_Z,         KC_X,   KC_C,   KC_V,   KC_B,   KC_BSPC,
@@ -85,8 +80,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                               KC_LEFT,
                                               KC_SPC, KC_ENT, KC_RIGHT,
         // right hand
-        KC_EQL,      KC_6,   KC_7,   KC_8,   KC_9,   KC_0,             KC_DELETE,
-        KC_TAB,      KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,             KC_BSLS,
+        KC_LEAD,     KC_6,   KC_7,   KC_8,   KC_9,   KC_0,             KC_MINUS,
+        KC_TAB,      KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,             KC_LBRC,
                      KC_H,   KC_J,   KC_K,   KC_L,   KC_SCLN,          KC_RSFT,
         KC_BSPC,     KC_N,   KC_M,   KC_COMM,KC_DOT, KC_QUOT,          F(TE_CTL_ESC),
                              KC_RGUI,KC_DOWN,KC_LBRC,KC_RBRC,          KC_RALT,
@@ -274,8 +269,52 @@ void matrix_init_user(void) {
 
 };
 
+LEADER_EXTERNS();
+
 // Runs constantly in the background, in a loop.
 void matrix_scan_user(void) {
+    LEADER_DICTIONARY() {
+        leading = false;
+        leader_end();
+
+        SEQ_ONE_KEY(KC_LBRC) {
+            register_code(KC_RBRC);
+            unregister_code(KC_RBRC);
+        }
+        SEQ_TWO_KEYS(KC_LBRC, KC_LBRC) {
+            register_code(KC_LSFT);
+            register_code(KC_RBRC);
+            unregister_code(KC_RBRC);
+            unregister_code(KC_LSFT);
+        }
+
+        SEQ_ONE_KEY(KC_SLSH) {
+            register_code(KC_BSLS);
+            unregister_code(KC_BSLS);
+        }
+        SEQ_TWO_KEYS(KC_SLSH, KC_SLSH) {
+          register_code(KC_LSFT);
+          register_code(KC_BSLS);
+          unregister_code(KC_BSLS);
+          unregister_code(KC_LSFT);
+        }
+
+        SEQ_ONE_KEY(KC_MINUS) {
+            register_code(KC_EQL);
+            unregister_code(KC_EQL);
+        }
+        SEQ_TWO_KEYS(KC_MINUS, KC_MINUS) {
+            register_code(KC_LSFT);
+            register_code(KC_EQL);
+            unregister_code(KC_EQL);
+            unregister_code(KC_LSFT);
+        }
+
+        SEQ_ONE_KEY(KC_LSFT) {
+            register_code(KC_CAPSLOCK);
+            unregister_code(KC_CAPSLOCK);
+        }
+    }
 
     uint8_t layer = biton32(layer_state);
 
