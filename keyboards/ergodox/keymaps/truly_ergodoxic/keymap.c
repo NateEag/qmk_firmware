@@ -9,7 +9,7 @@
 //
 // Also includes a Plover layer, because I'm interested in learning Plover.
 
-#include "ergodox_ez.h"
+#include "ergodox.h"
 #include "debug.h"
 #include "action_layer.h"
 #include "led.h"
