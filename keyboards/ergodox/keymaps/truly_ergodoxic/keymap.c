@@ -21,6 +21,10 @@
 
 #define LEADER_TIMEOUT 300
 
+// TODO Figure out if I can use tap dance to create modifier/tap/double-tap keys.
+//
+// That would be *awesome*.
+//
 // I want to use some modifier keys as modifier/tap dual-function keys.
 // The MT() macro's native behavior is bad for a fast typist, though -
 // if the whole sequence takes less than TAPPING_TERM, you'll get the keycodes
@@ -28,11 +32,24 @@
 //
 // I have therefore adopted a workaround proposed on GitHub:
 //
-// https://github.com/jackhumbert/qmk_firmware/issues/303#issuecomment-217328415
+// https://github.com/jackhumbert/qmk_firmware/issues/303#issue comment-217328415
 //
 // which means we only get the tap keycode if the tap was less than
 // TAPPING_TERM *and* no other keys were pressed during that time.
 #define TE_CTL_ESC 8
+
+// Try tap dance for typing backslash.
+//
+// TODO File bug on the Shift delay when typing ~.
+// Guessing the original tap dance author didn't notice because he uses
+// Shift as a one-shot modifier.
+enum {
+  TD_BSLS = 0,
+};
+
+qk_tap_dance_action_t tap_dance_actions[] = {
+  [TD_BSLS] = ACTION_TAP_DANCE_DOUBLE(KC_GRV, KC_BSLS)
+};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* Keymap 0: Basic layer
@@ -42,14 +59,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * twice after the leader key.
  *
  * TODO Do something useful on tapping Shift.
- * I currently use an IDE at $DAYJOB that uses Shift-Shift as an unremappable
- * high-importance shortcut. Thus, I can't do anything else with the Shift
- * keys, but I would like to.
+ * I used to use an IDE at $DAYJOB that uses Shift-Shift as an unremappable
+ * high-importance shortcut, so I haven't thought about what to do with it.
+ *
+ * TODO Figure out what to do with the Leader and thumb Fn keys. I don't plan
+ * to use them for much any more, and Leader especially is in a valuable place.
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
- * |   `    |   1  |   2  |   3  |   4  |   5  |Leader|           |Leader|   6  |   7  |   8  |   9  |   0  |  - (=) |
+ * | ` (\)  |   1  |   2  |   3  |   4  |   5  |Leader|           |Leader|   6  |   7  |   8  |   9  |   0  |   -    |
  * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
- * | / (\)  |   Q  |   W  |   E  |   R  |   T  | Tab  |           | Tab  |   Y  |   U  |   I  |   O  |   P  | [ (])  |
+ * |   /    |   Q  |   W  |   E  |   R  |   T  | Tab  |           | Tab  |   Y  |   U  |   I  |   O  |   P  |   =    |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
  * | Shift  |   A  |   S  |   D  |   F  |   G  |------|           |------|   H  |   J  |   K  |   L  |   ;  | Shift  |
  * |--------+------+------+------+------+------| Back |           | Back |------+------+------+------+------+--------|
@@ -70,7 +89,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Otherwise, it needs KC_*
 [BASE] = KEYMAP(  // layer 0 : default
         // left hand
-        KC_GRV,         KC_1,         KC_2,   KC_3,   KC_4,   KC_5,   KC_LEAD,
+        TD(TD_BSLS),    KC_1,         KC_2,   KC_3,   KC_4,   KC_5,   KC_LEAD,
         KC_SLSH,        KC_Q,         KC_W,   KC_E,   KC_R,   KC_T,   KC_TAB,
         KC_LSFT,        KC_A,         KC_S,   KC_D,   KC_F,   KC_G,
         F(TE_CTL_ESC),  KC_Z,         KC_X,   KC_C,   KC_V,   KC_B,   KC_BSPC,
@@ -80,7 +99,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                               KC_SPC, KC_ENT, KC_RIGHT,
         // right hand
         KC_LEAD,     KC_6,   KC_7,   KC_8,   KC_9,   KC_0,             KC_MINUS,
-        KC_TAB,      KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,             KC_LBRC,
+        KC_TAB,      KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,             KC_EQL,
                      KC_H,   KC_J,   KC_K,   KC_L,   KC_SCLN,          KC_RSFT,
         KC_BSPC,     KC_N,   KC_M,   KC_COMM,KC_DOT, KC_QUOT,          F(TE_CTL_ESC),
                              KC_RGUI,  MO(2),KC_LBRC,KC_RBRC,          KC_RALT,
