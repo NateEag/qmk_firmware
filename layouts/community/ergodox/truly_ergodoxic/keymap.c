@@ -121,6 +121,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *
  * We'll see how it pans out.
  *
+ * TODO Maybe try moving 'c' and 'v'/'n' and 'm' to the top thumb keys? My hand
+ * has felt too stretched trying basic steno, and I'm wondering if that would
+ * be more comfortable. Would require changing my layer shift keys, but I have
+ * some unused keys in the base layer anyway.
+ *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
  * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
@@ -144,6 +149,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [PLVR] = KEYMAP(  // layout: layer 1: Steno for Plover
         // left hand
         KC_NO, KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,
+        // FIXME Looks like I have my numbers offset wrong here?
         KC_NO,  KC_1,   KC_2,   KC_3,   KC_4,   KC_5,   KC_5,
         KC_NO,  KC_NO,  KC_Q,   KC_W,   KC_E,   KC_R,
         KC_NO,  KC_NO,  KC_A,   KC_S,   KC_D,   KC_F,   KC_G,
