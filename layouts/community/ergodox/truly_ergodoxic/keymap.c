@@ -48,19 +48,22 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* Keymap 0: Basic layer
  *
- * Symbols surrounded by () can be triggered by pressing the key once after the
- * leader key. Their Shift equivalent can be triggered by pressing the key
- * twice after the leader key.
+ * Symbols surrounded by () can be triggered by tapping the key twice rapidly.
+ * Their Shifted equivalent will appear if you double-tap while holding Shift.
  *
- * TODO Do something useful on tapping Shift.
- * I used to use an IDE at $DAYJOB that uses Shift-Shift as an unremappable
- * high-importance shortcut, so I haven't thought about what to do with it.
+ * TODO Do something useful with the top center keys. Maybe a Hyper modifier?
  *
- * TODO Figure out what to do with the Leader and thumb Fn keys. I don't plan
- * to use them for much any more, and Leader especially is in a valuable place.
+ * TODO Figure out what to do with the thumb Fn keys. I don't plan to use it
+ * for much any more since I now have Fn by the GUI keys.
+ *
+ * TODO Make more use of mod/tap. I have some tappable keys that might be
+ * moddable, and several mod keys that could be tapped (Alt, Shift, GUI, Fn).
+ *
+ * TODO Bind Caps Lock somewhere (it's useful for SQL and CONSTANT_NAMES).
+ * Maybe Fn + Shift?
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
- * | ` (\)  |   1  |   2  |   3  |   4  |   5  |Leader|           |Leader|   6  |   7  |   8  |   9  |   0  |   -    |
+ * | ` (\)  |   1  |   2  |   3  |   4  |   5  |      |           |      |   6  |   7  |   8  |   9  |   0  |   -    |
  * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
  * |   /    |   Q  |   W  |   E  |   R  |   T  | Tab  |           | Tab  |   Y  |   U  |   I  |   O  |   P  |   =    |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
@@ -83,7 +86,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Otherwise, it needs KC_*
 [BASE] = KEYMAP(  // layer 0 : default
         // left hand
-        TD(TD_BSLS),    KC_1,         KC_2,   KC_3,   KC_4,   KC_5,   KC_LEAD,
+        TD(TD_BSLS),    KC_1,         KC_2,   KC_3,   KC_4,   KC_5,   KC_NO,
         KC_SLSH,        KC_Q,         KC_W,   KC_E,   KC_R,   KC_T,   KC_TAB,
         KC_LSFT,        KC_A,         KC_S,   KC_D,   KC_F,   KC_G,
         F(TE_CTL_ESC),  KC_Z,         KC_X,   KC_C,   KC_V,   KC_B,   KC_BSPC,
@@ -92,7 +95,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                               KC_LEFT,
                                               KC_SPC, KC_ENT, KC_RIGHT,
         // right hand
-        KC_LEAD,     KC_6,   KC_7,   KC_8,   KC_9,   KC_0,             KC_MINUS,
+        KC_NO,       KC_6,   KC_7,   KC_8,   KC_9,   KC_0,             KC_MINUS,
         KC_TAB,      KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,             KC_EQL,
                      KC_H,   KC_J,   KC_K,   KC_L,   KC_SCLN,          KC_RSFT,
         KC_BSPC,     KC_N,   KC_M,   KC_COMM,KC_DOT, KC_QUOT,          F(TE_CTL_ESC),
@@ -291,53 +294,8 @@ void matrix_init_user(void) {
 
 };
 
-LEADER_EXTERNS();
-
 // Runs constantly in the background, in a loop.
 void matrix_scan_user(void) {
-    LEADER_DICTIONARY() {
-        leading = false;
-        leader_end();
-
-        SEQ_ONE_KEY(KC_LBRC) {
-            register_code(KC_RBRC);
-            unregister_code(KC_RBRC);
-        }
-        SEQ_TWO_KEYS(KC_LBRC, KC_LBRC) {
-            register_code(KC_LSFT);
-            register_code(KC_RBRC);
-            unregister_code(KC_RBRC);
-            unregister_code(KC_LSFT);
-        }
-
-        SEQ_ONE_KEY(KC_SLSH) {
-            register_code(KC_BSLS);
-            unregister_code(KC_BSLS);
-        }
-        SEQ_TWO_KEYS(KC_SLSH, KC_SLSH) {
-          register_code(KC_LSFT);
-          register_code(KC_BSLS);
-          unregister_code(KC_BSLS);
-          unregister_code(KC_LSFT);
-        }
-
-        SEQ_ONE_KEY(KC_MINUS) {
-            register_code(KC_EQL);
-            unregister_code(KC_EQL);
-        }
-        SEQ_TWO_KEYS(KC_MINUS, KC_MINUS) {
-            register_code(KC_LSFT);
-            register_code(KC_EQL);
-            unregister_code(KC_EQL);
-            unregister_code(KC_LSFT);
-        }
-
-        SEQ_ONE_KEY(KC_LSFT) {
-            register_code(KC_CAPSLOCK);
-            unregister_code(KC_CAPSLOCK);
-        }
-    }
-
     uint8_t layer = biton32(layer_state);
 
     ergodox_board_led_off();
