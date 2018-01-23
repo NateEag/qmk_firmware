@@ -19,30 +19,101 @@
 #define SYMB 2 // Function key layer
 #define MDIA 3 // media keys
 
-// TODO Figure out if I can use tap dance to create modifier/tap/double-tap keys.
+// The following abstractions were adapted from the docs, which provide an
+// example of how to implement hold/single-tap/double-tap/double-tap-and-hold
+// keys:
 //
-// That would be *awesome*.
+// https://docs.qmk.fm/feature_tap_dance.html#example-4-quad-function-tap-dance
 //
-// I want to use some modifier keys as modifier/tap dual-function keys.
-// The MT() macro's native behavior is bad for a fast typist, though -
-// if the whole sequence takes less than TAPPING_TERM, you'll get the keycodes
-// for the two keys you pressed, rather than modifier+key.
+// This layout uses them to implement modifier keys with single- and double-tap
+// functions.
 //
-// I have therefore adopted a workaround proposed on GitHub:
-//
-// https://github.com/jackhumbert/qmk_firmware/issues/303#issue comment-217328415
-//
-// which means we only get the tap keycode if the tap was less than
-// TAPPING_TERM *and* no other keys were pressed during that time.
-#define TE_CTL_ESC 8
+// Note that the cur_dance function has been adapted to handle tap/modifier
+// keys differently from the original. Details on why are inline.
 
-// Try tap dance for typing backslash.
+//**************** Definitions needed for quad function to work *********************//
+//Enums used to clearly convey the state of the tap dance
+enum {
+  SINGLE_TAP = 1,
+  SINGLE_HOLD = 2,
+  DOUBLE_TAP = 3,
+  DOUBLE_HOLD = 4,
+  DOUBLE_SINGLE_TAP = 5 //send SINGLE_TAP twice - NOT DOUBLE_TAP
+  // Add more enums here if you want for triple, quadruple, etc.
+};
+
+typedef struct {
+  bool is_press_action;
+  int state;
+} tap;
+
+int cur_dance (qk_tap_dance_state_t *state) {
+  if (state->count == 1) {
+    // Modified from original. The goal is to keep new modifiers from
+    // interrupting held tap-dance modifiers, so when I hold a tap dance
+    // modifier/single-tap key then press another modifier with it, it doesn't
+    // send the single-tap instead of registering the hold. (I use this to map
+    // a single key to Escape when tapped and Control when held, and I use
+    // Ctrl+Shift a lot).
+    //
+    // This change may be responsible for the sudden breakage of my Ctrl+Shift+a
+    // shortcut for activating screensaver - it apparently sends a delayed
+    // event after I'm done with the keystroke, which smells a lot like tap
+    // dance not doing quite what I want...
+    if ((state->interrupted && state->pressed!=1) || state->pressed==0) {
+      return SINGLE_TAP;
+    } else {
+      return SINGLE_HOLD;
+    }
+  }
+  //If count = 2, and it has been interrupted - assume that user is trying to type the letter associated
+  //with single tap. In example below, that means to send `xx` instead of `Escape`.
+  else if (state->count == 2) {
+    if (state->interrupted) return DOUBLE_SINGLE_TAP;
+    else if (state->pressed) return DOUBLE_HOLD;
+    else return DOUBLE_TAP;
+  }
+  else return 6; //magic number. At some point this method will expand to work for more presses
+}
+
+//**************** END Definitions needed for quad function to work *********************//
+
+
+// Definitions for modifier tap dance keys.
+
+static tap ctrltap_state = {
+  .is_press_action = true,
+  .state = 0
+};
+
+void ctrl_finished(qk_tap_dance_state_t *state, void *user_data) {
+  ctrltap_state.state = cur_dance(state);
+  switch (ctrltap_state.state) {
+    case SINGLE_TAP: register_code(KC_ESC); break;
+    case SINGLE_HOLD: register_code(KC_LCTRL); break;
+  }
+}
+
+void ctrl_reset(qk_tap_dance_state_t *state, void *user_data) {
+  switch (ctrltap_state.state) {
+    case SINGLE_TAP: unregister_code(KC_ESC); break;
+    case SINGLE_HOLD: unregister_code(KC_LCTRL); break;
+  }
+
+  ctrltap_state.state = 0;
+}
+
+// END Definitions for modifier tap dance keys.
+
+// Declare tap dance key identifiers for use in the actual keymaps.
 enum {
   TD_BSLS = 0,
+  TD_CTRL_ESC
 };
 
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [TD_BSLS] = ACTION_TAP_DANCE_DOUBLE(KC_GRV, KC_BSLS)
+  [TD_BSLS] = ACTION_TAP_DANCE_DOUBLE(KC_GRV, KC_BSLS),
+  [TD_CTRL_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, ctrl_finished, ctrl_reset)
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -89,7 +160,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         TD(TD_BSLS),    KC_1,         KC_2,   KC_3,   KC_4,   KC_5,   KC_NO,
         KC_SLSH,        KC_Q,         KC_W,   KC_E,   KC_R,   KC_T,   KC_TAB,
         KC_LSFT,        KC_A,         KC_S,   KC_D,   KC_F,   KC_G,
-        F(TE_CTL_ESC),  KC_Z,         KC_X,   KC_C,   KC_V,   KC_B,   KC_BSPC,
+        TD(TD_CTRL_ESC), KC_Z,         KC_X,   KC_C,   KC_V,   KC_B,   KC_BSPC,
         KC_LALT,        KC_QUOT,      LALT(KC_LSFT),  MO(2),KC_LGUI,
                                               MO(2), TG(1),
                                                               KC_LEFT,
@@ -98,7 +169,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_NO,       KC_6,   KC_7,   KC_8,   KC_9,   KC_0,             KC_MINUS,
         KC_TAB,      KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,             KC_EQL,
                      KC_H,   KC_J,   KC_K,   KC_L,   KC_SCLN,          KC_RSFT,
-        KC_BSPC,     KC_N,   KC_M,   KC_COMM,KC_DOT, KC_QUOT,          F(TE_CTL_ESC),
+        KC_BSPC,     KC_N,   KC_M,   KC_COMM,KC_DOT, KC_QUOT,          TD(TD_CTRL_ESC),
                              KC_RGUI,  MO(2),KC_LBRC,KC_RBRC,          KC_RALT,
              TG(1),       MO(2),
              KC_UP,
@@ -256,12 +327,16 @@ KEYMAP(
 };
 
 const uint16_t PROGMEM fn_actions[] = {
-  [1] = ACTION_LAYER_TAP_TOGGLE(SYMB),                // FN1 - Momentary Layer 1 (Symbols)
-  [TE_CTL_ESC] = ACTION_MACRO_TAP(TE_CTL_ESC)
+  [1] = ACTION_LAYER_TAP_TOGGLE(SYMB)                // FN1 - Momentary Layer 1 (Symbols)
 };
 
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 {
+  // TODO Remove KC_RSFT stuff? I don't remember why it's there. It was in my
+  // initial commit of this keymap back in my old branch, so I'm not sure if I
+  // cargo-culted it from somewhere or if it maybe related somehow to my old
+  // setup's tapping of Shift to turn on Caps Lock.
+  //
   // MACRODOWN only works in this function
       switch(id) {
         case 0:
@@ -272,24 +347,6 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
           }
           break;
 
-        case TE_CTL_ESC:
-          // TODO Look for a simpler way to express this idea.
-          // Maybe there should be an alternative to the MT() macro that has
-          // these semantics baked-in? MTI(), for Modifier-Tap-Interrupted?
-          if (record->event.pressed) {
-            if (record->tap.count && !record->tap.interrupted) {
-              register_code(KC_ESC);
-            } else {
-              register_code(KC_LCTL);
-            }
-          } else {
-            if (record->tap.count && !record->tap.interrupted) {
-              unregister_code(KC_ESC);
-            } else {
-              unregister_code(KC_LCTL);
-            }
-          }
-          break;
       }
 
       return MACRO_NONE;
