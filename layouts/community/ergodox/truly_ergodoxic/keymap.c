@@ -107,22 +107,18 @@ void ctrl_reset(qk_tap_dance_state_t *state, void *user_data) {
 
 // Declare tap dance key identifiers for use in the actual keymaps.
 enum {
-  TD_BSLS = 0,
   TD_CTRL_ESC
 };
 
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [TD_BSLS] = ACTION_TAP_DANCE_DOUBLE(KC_GRV, KC_BSLS),
   [TD_CTRL_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, ctrl_finished, ctrl_reset)
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* Keymap 0: Basic layer
  *
- * Symbols surrounded by () can be triggered by tapping the key twice rapidly.
- * Their Shifted equivalent will appear if you double-tap while holding Shift.
- *
- * TODO Do something useful with the top center keys. Maybe a Hyper modifier?
+ * TODO Do something additional with the top center keys. Maybe a Hyper
+ * modifier on double-tap-and-hold?
  *
  * TODO Figure out what to do with the thumb Fn keys. I don't plan to use it
  * for much any more since I now have Fn by the GUI keys.
@@ -134,9 +130,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * Maybe Fn + Shift?
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
- * | ` (\)  |   1  |   2  |   3  |   4  |   5  |      |           |      |   6  |   7  |   8  |   9  |   0  |   -    |
+ * |   `    |   1  |   2  |   3  |   4  |   5  |  -   |           |  =   |   6  |   7  |   8  |   9  |   0  |        |
  * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
- * |   /    |   Q  |   W  |   E  |   R  |   T  | Tab  |           | Tab  |   Y  |   U  |   I  |   O  |   P  |   =    |
+ * |   /    |   Q  |   W  |   E  |   R  |   T  | Tab  |           | Tab  |   Y  |   U  |   I  |   O  |   P  |   \    |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
  * | Shift  |   A  |   S  |   D  |   F  |   G  |------|           |------|   H  |   J  |   K  |   L  |   ;  | Shift  |
  * |--------+------+------+------+------+------| Back |           | Back |------+------+------+------+------+--------|
@@ -157,7 +153,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Otherwise, it needs KC_*
 [BASE] = KEYMAP(  // layer 0 : default
         // left hand
-        TD(TD_BSLS),    KC_1,         KC_2,   KC_3,   KC_4,   KC_5,   KC_NO,
+        KC_GRV,         KC_1,         KC_2,   KC_3,   KC_4,   KC_5,   KC_MINUS,
         KC_SLSH,        KC_Q,         KC_W,   KC_E,   KC_R,   KC_T,   KC_TAB,
         KC_LSFT,        KC_A,         KC_S,   KC_D,   KC_F,   KC_G,
         TD(TD_CTRL_ESC), KC_Z,         KC_X,   KC_C,   KC_V,   KC_B,   KC_BSPC,
@@ -166,8 +162,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                               KC_LEFT,
                                               KC_SPC, KC_ENT, KC_RIGHT,
         // right hand
-        KC_NO,       KC_6,   KC_7,   KC_8,   KC_9,   KC_0,             KC_MINUS,
-        KC_TAB,      KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,             KC_EQL,
+        KC_EQL,       KC_6,   KC_7,   KC_8,   KC_9,   KC_0,             KC_DEL,
+        KC_TAB,      KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,             KC_BSLS,
                      KC_H,   KC_J,   KC_K,   KC_L,   KC_SCLN,          KC_RSFT,
         KC_BSPC,     KC_N,   KC_M,   KC_COMM,KC_DOT, KC_QUOT,          TD(TD_CTRL_ESC),
                              KC_RGUI,  MO(2),KC_LBRC,KC_RBRC,          KC_RALT,
