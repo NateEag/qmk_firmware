@@ -126,8 +126,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * TODO Make more use of mod/tap. I have some tappable keys that might be
  * moddable, and several mod keys that could be tapped (Alt, Shift, GUI, Fn).
  *
- * TODO Bind Caps Lock somewhere (it's useful for SQL and CONSTANT_NAMES).
- * Maybe Fn + Shift?
+ * TODO Figure out why Caps Lock only fires if I hold it. Feels like I have to
+ * wait for TAPPING_TERM?
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |   `    |   1  |   2  |   3  |   4  |   5  |  -   |           |  =   |   6  |   7  |   8  |   9  |   0  |        |
@@ -142,7 +142,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *   `----------------------------------'                                       `----------------------------------'
  *
  *                                        ,-------------.       ,-------------.
- *                                        |  Fn  |Plover|       |Plover|  Fn   |
+ *                                        |CapsLk|      |       |Plover|       |
  *                                 ,------|------|------|       |------+-------+------.
  *                                 |      |      | Left |       |  Up  |       |      |
  *                                 | Space| Enter|------|       |------| Enter |Space |
@@ -158,7 +158,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LSFT,        KC_A,         KC_S,   KC_D,   KC_F,   KC_G,
         TD(TD_CTRL_ESC), KC_Z,         KC_X,   KC_C,   KC_V,   KC_B,   KC_BSPC,
         KC_LALT,        KC_QUOT,      LALT(KC_LSFT),  MO(2),KC_LGUI,
-                                              MO(2), TG(1),
+                                              KC_CAPS, KC_NO,
                                                               KC_LEFT,
                                               KC_SPC, KC_ENT, KC_RIGHT,
         // right hand
@@ -167,7 +167,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      KC_H,   KC_J,   KC_K,   KC_L,   KC_SCLN,          KC_RSFT,
         KC_BSPC,     KC_N,   KC_M,   KC_COMM,KC_DOT, KC_QUOT,          TD(TD_CTRL_ESC),
                              KC_RGUI,  MO(2),KC_LBRC,KC_RBRC,          KC_RALT,
-             TG(1),       MO(2),
+             TG(1),       KC_NO,
              KC_UP,
              KC_DOWN,KC_ENT, KC_SPC
     ),
