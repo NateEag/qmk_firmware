@@ -1,0 +1,2 @@
+TAP_DANCE_ENABLE = yes
+FORCE_NKRO = yes
