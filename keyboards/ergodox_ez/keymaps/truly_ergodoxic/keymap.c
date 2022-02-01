@@ -7,7 +7,8 @@
 // The central location of Tab and Backspace has also helped, by moving load
 // from the weaker pinky fingers to the stronger index fingers.
 //
-// Also includes a Plover layer, because I'm interested in learning Plover.
+// Also includes a Plover layer, because I'm interested in learning
+// stenography.
 
 #include QMK_KEYBOARD_H
 #include "debug.h"
