@@ -93,7 +93,7 @@ void ctrl_finished(qk_tap_dance_state_t *state, void *user_data) {
     case SINGLE_HOLD: register_code(KC_LCTRL); break;
     // There are some cases where I want to send Escape twice quickly, so I
     // bind double-tap to do exactly that.
-    case DOUBLE_TAP: register_code(KC_ESC); break;
+    case DOUBLE_TAP: register_code(KC_ESC); unregister_code(KC_ESC); break;
   }
 }
 
@@ -101,7 +101,7 @@ void ctrl_reset(qk_tap_dance_state_t *state, void *user_data) {
   switch (ctrltap_state.state) {
     case SINGLE_TAP: unregister_code(KC_ESC); break;
     case SINGLE_HOLD: unregister_code(KC_LCTRL); break;
-    case DOUBLE_TAP: register_code(KC_ESC); break;
+    case DOUBLE_TAP: register_code(KC_ESC); unregister_code(KC_ESC); break;
   }
 
   ctrltap_state.state = 0;
