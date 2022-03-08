@@ -20,6 +20,34 @@
 #define SYMB 2 // Function key layer
 #define NMPD 3 // Numeric key
 
+enum custom_keycodes {
+  // On many Apple laptops, Caps Lock must be depressed for at least 200
+  // milliseconds before it will register:
+  // https://web.archive.org/web/20150115033359/https://support.apple.com/en-us/HT201509
+  //
+  // I've opted to work around this in hardware, so that Caps Lock should Just
+  // Work no matter what computer I have my keyboard plugged into.
+  //
+  // The idea to use a macro to work around this "feature" came from a GitHub
+  // discussion:
+  // 
+  // https://github.com/qmk/qmk_firmware/issues/2664#issuecomment-939075333
+  INSTA_CAPS_LOCK
+};
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  switch(keycode) {
+  case INSTA_CAPS_LOCK:
+    if (record->event.pressed) {
+      SEND_STRING(SS_TAP(X_CAPS));
+    }
+    break;
+  }
+
+  return true;
+}
+
+
 // The following abstractions were adapted from the docs, which provide an
 // example of how to implement hold/single-tap/double-tap/double-tap-and-hold
 // keys:
@@ -163,7 +191,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LSFT,        KC_A,         KC_S,   KC_D,   KC_F,   KC_G,
         TD(TD_CTRL_ESC), KC_Z,         KC_X,   KC_C,   KC_V,   KC_B,   KC_BSPC,
         KC_LALT,        KC_QUOT,      LALT(KC_LSFT),  MO(2),KC_LGUI,
-                                              KC_CAPS, KC_NO,
+                                              INSTA_CAPS_LOCK, KC_NO,
                                                               KC_LEFT,
                                               KC_SPC, KC_ENT, KC_RIGHT,
         // right hand
