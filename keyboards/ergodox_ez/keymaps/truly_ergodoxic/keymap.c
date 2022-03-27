@@ -30,7 +30,7 @@ enum custom_keycodes {
   //
   // The idea to use a macro to work around this "feature" came from a GitHub
   // discussion:
-  // 
+  //
   // https://github.com/qmk/qmk_firmware/issues/2664#issuecomment-939075333
   INSTA_CAPS_LOCK
 };
@@ -321,7 +321,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
  * |        |      |      |      |      |      |------|           |------| Tab  |  4   |  5   |  6   |  .   |        |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
- * |        |      |      |      |      |      |      |           |      |      |  1   |  2   |  3   |      |        |
+ * |        |      |      |      |      |      |      |           |      |      |  1   |  2   |  3   |  -   |        |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
  *   |      |      |      |      |      |                                       |  0   |      |      |      |      |
  *   `----------------------------------'                                       `----------------------------------'
@@ -347,7 +347,7 @@ LAYOUT_ergodox(
        KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS,  KC_TRNS, KC_7, KC_8, KC_9, KC_TRNS, KC_TRNS,
                  KC_TAB, KC_4, KC_5, KC_6, KC_DOT, KC_MPLY,
-       KC_TRNS,  KC_TRNS, KC_1, KC_2, KC_3, KC_TRNS, KC_TRNS,
+       KC_TRNS,  KC_TRNS, KC_1, KC_2, KC_3, KC_MINUS, KC_TRNS,
                           KC_0, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS, KC_TRNS,
        KC_TRNS,
