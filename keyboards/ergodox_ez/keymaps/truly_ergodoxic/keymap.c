@@ -136,15 +136,31 @@ void ctrl_reset(qk_tap_dance_state_t *state, void *user_data) {
   ctrltap_state.state = 0;
 }
 
+void super_finished(qk_tap_dance_state_t *state, void *user_data) {
+  ctrltap_state.state = cur_dance(state);
+  switch (ctrltap_state.state) {
+    // FIXME Do something useful with SINGLE_TAP?
+  case SINGLE_TAP:
+  case SINGLE_HOLD:
+    // FIXME Handle left vs. right GUI keys?
+    register_code(KC_LGUI); break;
+  case DOUBLE_TAP:
+  case DOUBLE_HOLD:
+    register_code(KC_)
+  }
+}
+
 // END Definitions for modifier tap dance keys.
 
 // Declare tap dance key identifiers for use in the actual keymaps.
 enum {
-  TD_CTRL_ESC
+  TD_CTRL_ESC,
+  TD_SUPER_HYPER
 };
 
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [TD_CTRL_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, ctrl_finished, ctrl_reset)
+  [TD_CTRL_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, ctrl_finished, ctrl_reset),
+  [TD_SUPER_HYPER] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, super_finished, super_reset)
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
