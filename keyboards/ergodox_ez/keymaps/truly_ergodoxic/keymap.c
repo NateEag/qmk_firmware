@@ -309,18 +309,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_PGDOWN,KC_TRNS, KC_TRNS
 ),
 
-/* Keymap 3: Numeric Keypad
+/* Keymap 3: Numeric Keypad / inverted-t arrow keys
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
  * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
- * |        |      |      |      |      |      |      |           |      |      |  7   |  8   |  9   |      |        |
+ * |        |      |      |  Up  |      |      |      |           |      |      |  7   |  8   |  9   |  +   |        |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
- * |        |      |      |      |      |      |------|           |------| Tab  |  4   |  5   |  6   |  .   |        |
+ * |        |      | Left | Down | Right|      |------|           |------| Tab  |  4   |  5   |  6   |  .   |        |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
  * |        |      |      |      |      |      |      |           |      |      |  1   |  2   |  3   |  -   |        |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
- *   |      |      |      |      |      |                                       |  0   |      |      |      |      |
+ *   |      |      |      |      |      |                                       |  0   |  *   |  /   |      |      |
  *   `----------------------------------'                                       `----------------------------------'
  *                                        ,-------------.       ,-------------.
  *                                        |      |      |       |      |      |
@@ -333,8 +333,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //
 LAYOUT_ergodox(
        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+       KC_TRNS, KC_TRNS, KC_TRNS, KC_UP, KC_TRNS, KC_TRNS, KC_TRNS,
+       KC_TRNS, KC_TRNS, KC_LEFT, KC_DOWN, KC_RIGHT, KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
                                            KC_TRNS, KC_TRNS,
@@ -342,10 +342,10 @@ LAYOUT_ergodox(
                                   KC_TRNS, KC_TRNS, KC_TRNS,
     // right hand
        KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS,  KC_TRNS, KC_7, KC_8, KC_9, KC_TRNS, KC_TRNS,
-                 KC_TAB, KC_4, KC_5, KC_6, KC_DOT, KC_MPLY,
+       KC_TRNS,  KC_TRNS, KC_7, KC_8, KC_9, KC_PLUS, KC_TRNS,
+                 KC_TAB, KC_4, KC_5, KC_6, KC_DOT, KC_TRNS,
        KC_TRNS,  KC_TRNS, KC_1, KC_2, KC_3, KC_MINUS, KC_TRNS,
-                          KC_0, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+                          KC_0, KC_ASTERISK, KC_SLASH, KC_TRNS, KC_TRNS,
        KC_TRNS, KC_TRNS,
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_ENT
