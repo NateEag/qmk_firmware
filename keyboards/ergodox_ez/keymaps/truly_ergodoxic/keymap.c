@@ -159,9 +159,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * TODO Make more use of mod/tap. I have some tappable keys that might be
  * moddable, and several mod keys that could be tapped (Alt, Shift, GUI, Fn).
  *
- * TODO Figure out why Caps Lock only fires if I hold it. Feels like I have to
- * wait for TAPPING_TERM?
- *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |   `    |   1  |   2  |   3  |   4  |   5  |  -   |           |  =   |   6  |   7  |   8  |   9  |   0  |        |
  * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
