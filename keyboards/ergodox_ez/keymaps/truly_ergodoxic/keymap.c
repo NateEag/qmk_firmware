@@ -352,7 +352,7 @@ LAYOUT_ergodox(
                           KC_0, KC_ASTERISK, KC_SLASH, KC_TRNS, KC_TRNS,
        KC_TRNS, KC_TRNS,
        KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_ENT
+       KC_TRNS, KC_TRNS, KC_TRNS
 ),
 };
 
