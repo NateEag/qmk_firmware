@@ -140,11 +140,15 @@ void ctrl_reset(qk_tap_dance_state_t *state, void *user_data) {
 
 // Declare tap dance key identifiers for use in the actual keymaps.
 enum {
-  TD_CTRL_ESC
+  TD_CTRL_ESC,
+  TD_RGUI_F19,
+  TD_LGUI_F19
 };
 
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [TD_CTRL_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, ctrl_finished, ctrl_reset)
+  [TD_CTRL_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, ctrl_finished, ctrl_reset),
+  [TD_RGUI_F19] = ACTION_TAP_DANCE_DOUBLE(KC_RGUI, KC_F19),
+  [TD_LGUI_F19] = ACTION_TAP_DANCE_DOUBLE(KC_LGUI, KC_F19)
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -187,7 +191,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_SLSH,        KC_Q,         KC_W,   KC_E,   KC_R,   KC_T,   KC_TAB,
         KC_LSFT,        KC_A,         KC_S,   KC_D,   KC_F,   KC_G,
         TD(TD_CTRL_ESC), KC_Z,         KC_X,   KC_C,   KC_V,   KC_B,   KC_BSPC,
-        KC_LALT,        KC_QUOT,      LALT(KC_LSFT),  MO(2),KC_LGUI,
+        KC_LALT,        KC_QUOT,      LALT(KC_LSFT),  MO(2),TD(TD_LGUI_F19),
                                               INSTA_CAPS_LOCK, KC_NO,
                                                               KC_LEFT,
                                               KC_SPC, KC_ENT, KC_RIGHT,
@@ -196,7 +200,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB,      KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,             KC_BSLS,
                      KC_H,   KC_J,   KC_K,   KC_L,   KC_SCLN,          KC_RSFT,
         KC_BSPC,     KC_N,   KC_M,   KC_COMM,KC_DOT, KC_QUOT,          TD(TD_CTRL_ESC),
-                             KC_RGUI,  MO(2),KC_LBRC,KC_RBRC,          KC_RALT,
+                             TD(TD_RGUI_F19),  MO(2),KC_LBRC,KC_RBRC,          KC_RALT,
              TG(PLVR),       TG(NMPD),
              KC_UP,
              KC_DOWN,KC_ENT, KC_SPC
